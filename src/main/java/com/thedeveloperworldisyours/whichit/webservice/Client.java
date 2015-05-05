@@ -16,7 +16,7 @@ import retrofit.http.Query;
 public class Client {
 
     public interface ClientInterface{
-        @GET("/recent")
+        @GET("/nofilter/media/recent")
         void getInstagram( @Query("client_id") String clientId, Callback<Instagram> callback);
     }
 

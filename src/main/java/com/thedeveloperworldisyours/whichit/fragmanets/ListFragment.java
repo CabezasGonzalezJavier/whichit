@@ -1,18 +1,20 @@
 package com.thedeveloperworldisyours.whichit.fragmanets;
 
-import android.app.Activity;
-import android.net.Uri;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.thedeveloperworldisyours.whichit.MainActivity;
 import com.thedeveloperworldisyours.whichit.R;
+import com.thedeveloperworldisyours.whichit.adapters.GridAdapter;
 import com.thedeveloperworldisyours.whichit.adapters.ListAdapter;
+import com.thedeveloperworldisyours.whichit.interfaces.UpdateableFragment;
+import com.thedeveloperworldisyours.whichit.listener.InfiniteScrollListener;
 import com.thedeveloperworldisyours.whichit.models.Datum;
 import com.thedeveloperworldisyours.whichit.models.Instagram;
 import com.thedeveloperworldisyours.whichit.utils.Constants;
@@ -25,53 +27,100 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ListFragment extends Fragment {
-    Instagram mInstagram;
-    List<Datum> list;
-    ListView listView;
-    public ListFragment(Instagram instagram) {
-        this.mInstagram = instagram;
-    }
+public class ListFragment extends Fragment implements UpdateableFragment, SwipeRefreshLayout.OnRefreshListener {
+
+    ListView mListView;
+    private Instagram mInstagram;
+    ListAdapter mListAdapter;
+    private SwipeRefreshLayout mSwipeLayout;
+    private ProgressDialog mProgressDialog;
+    private boolean mFinishScroll = false;
+    private List<Datum> mList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+        mListView = (ListView) view.findViewById(R.id.fragment_list_list);
+        mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_container);
+        mSwipeLayout.setOnRefreshListener(this);
+        mProgressDialog = new ProgressDialog(getActivity());
+        mListView.setOnScrollListener(new InfiniteScrollListener(5) {
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+                mProgressDialog.show();
+                getInfo();
+                addList(mList);
+                mFinishScroll = true;
+            }
+        });
 
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2" };
-
-         listView= (ListView) view.findViewById(R.id.fragment_list_list);
-
-        if(Utils.isOnline(getActivity())){
-            getInstagram();
-        }
-
+        getList();
         return view;
     }
 
-    public void getList(){
-
-        ListAdapter listAdapter = new ListAdapter(getActivity(),list);
-        listView.setAdapter(listAdapter);
+    public void getList() {
+        if (!(mInstagram == null)) {
+            List<Datum> list = mInstagram.getData();
+            mListAdapter = new ListAdapter(getActivity(), list);
+            mListView.setAdapter(mListAdapter);
+        }
     }
+
+    @Override
+    public void update(Instagram instagram) {
+        mInstagram = instagram;
+        getList();
+    }
+
+    @Override
+    public void onRefresh() {
+        mListAdapter.clear();
+        getInfo();
+        mSwipeLayout.setRefreshing(false);
+    }
+
+    public void getInfo(){
+        if(Utils.isOnline(getActivity())){
+            getInstagram();
+        }else {
+            Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void getInstagram() {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
             public void success(Instagram instagram, Response response) {
-                mInstagram= instagram;
-                list = instagram.getData();
-                getList();
-                Log.v("getInstagram", "hola");
+                mList = instagram.getData();
+                buildList();
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                Toast.makeText(getActivity(),R.string.error_data,Toast.LENGTH_SHORT).show();
             }
         };
         Client.initRestAdapter().getInstagram(Constants.ID_INSTAGRAM,callback);
     }
+
+    public void addList(List<Datum> mValues){
+        for (int i=0; i <mValues.size();i++){
+            mList.add(mValues.get(i));
+        }
+    }
+
+    public void buildList() {
+        if (!mFinishScroll) {
+            mListAdapter = new ListAdapter(getActivity(), mList);
+            mListView.setAdapter(mListAdapter);
+
+        } else {
+            mListAdapter.notifyDataSetChanged();
+            mFinishScroll = false;
+            mProgressDialog.dismiss();
+        }
+    }
+
 }

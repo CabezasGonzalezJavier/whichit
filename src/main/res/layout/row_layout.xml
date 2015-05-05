@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TheDeveloperWorldIsYoursActivity">
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="22px"
-        android:layout_height="22px"
-        android:layout_marginLeft="4px"
-        android:layout_marginRight="10px"
-        android:layout_marginTop="4px" >
+        android:layout_width="match_parent"
+        android:layout_height="350dp" >
     </ImageView>
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@+id/label"
-        android:textSize="20px" >
+        android:background="@android:color/white"
+        android:textColor="@android:color/black"
+        android:layout_alignParentBottom="true"
+        android:textSize="20dp" >
     </TextView>
 
-</LinearLayout> 
+</RelativeLayout>

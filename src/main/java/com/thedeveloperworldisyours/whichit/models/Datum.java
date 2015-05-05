@@ -5,13 +5,14 @@ import android.provider.MediaStore;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by javiergonzalezcabezas on 5/5/15.
  */
-public class Datum {
+public class Datum implements Serializable {
 
     @Expose
     private Object attribution;

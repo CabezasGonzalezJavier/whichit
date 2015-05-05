@@ -7,18 +7,20 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.thedeveloperworldisyours.whichit.R;
+import com.thedeveloperworldisyours.whichit.models.Datum;
 
 import java.util.List;
 
 /**
  * Created by javiergonzalezcabezas on 5/5/15.
  */
-public class GridAdapter extends ArrayAdapter<String> {
+public class GridAdapter extends ArrayAdapter<Datum>  {
     private Activity mActivity;
-    private final List<String> mValues;
+    private final List<Datum> mValues;
 
-    public GridAdapter(Activity activity, List<String> vaules) {
+    public GridAdapter(Activity activity, List<Datum> vaules) {
         super(activity, R.layout.fragment_grid, vaules);
         this.mActivity = activity;
         this.mValues = vaules;
@@ -38,7 +40,7 @@ public class GridAdapter extends ArrayAdapter<String> {
             imageView = (ImageView) convertView;
         }
 
-//        Picasso.with(mActivity).load(mValues.get(position)).into(imageView);
+        Picasso.with(mActivity).load(mValues.get(position).getImages().getLowResolution().getUrl()).into(imageView);
         return imageView;
     }
 }
