@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -225,16 +226,17 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
 
 
         TextView text = (TextView) layout.findViewById(R.id.label);
+        text.setMovementMethod(new ScrollingMovementMethod());
 //        text.setText("Android custom dialog example!");
         ImageView image = (ImageView) layout.findViewById(R.id.icon);
         switch (mType){
             case 0:
-                text.setText(mInstagram.getData().get(position).getCaption().getText());
-                Picasso.with(getActivity()).load(mInstagram.getData().get(position).getImages().getLowResolution().getUrl()).into(image);
+                text.setText(mList.get(position).getCaption().getText());
+                Picasso.with(getActivity()).load(mList.get(position).getImages().getLowResolution().getUrl()).into(image);
                 break;
             case 1:
-                text.setText(mInstagram.getData().get(position).getUsername());
-                Picasso.with(getActivity()).load(mInstagram.getData().get(position).getProfilePicture()).into(image);
+                text.setText(mList.get(position).getUsername());
+                Picasso.with(getActivity()).load(mList.get(position).getProfilePicture()).into(image);
                 break;
             case 2:
                 break;

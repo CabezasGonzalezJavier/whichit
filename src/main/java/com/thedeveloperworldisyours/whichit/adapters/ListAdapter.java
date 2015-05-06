@@ -1,6 +1,7 @@
 package com.thedeveloperworldisyours.whichit.adapters;
 
 import android.content.Context;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class ListAdapter extends ArrayAdapter<Datum> {
             // configure view holder
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.text = (TextView) rowView.findViewById(R.id.label);
+            viewHolder.text.setMovementMethod(new ScrollingMovementMethod());
             viewHolder.image = (ImageView) rowView.findViewById(R.id.icon);
             rowView.setTag(viewHolder);
         }
