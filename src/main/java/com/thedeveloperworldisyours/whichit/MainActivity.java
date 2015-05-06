@@ -1,6 +1,8 @@
 package com.thedeveloperworldisyours.whichit;
 
+import android.annotation.TargetApi;
 import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -10,10 +12,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.Call;
 import com.thedeveloperworldisyours.whichit.adapters.TabsAdapter;
 import com.thedeveloperworldisyours.whichit.models.Instagram;
 import com.thedeveloperworldisyours.whichit.utils.Constants;
@@ -27,13 +32,18 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class MainActivity extends ActionBarActivity implements android.support.v7.app.ActionBar.TabListener {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+public class MainActivity extends ActionBarActivity implements  android.support.v7.app.ActionBar.TabListener {
 
 
     private ViewPager tabsviewPager;
     private ActionBar mActionBar;
     private TabsAdapter mTabsAdapter;
     public Instagram mInstagram;
+    private SearchView mSearchView;
+    private TextView mStatusView;
+    private String userString;
+    private int mSearchType=0;
 
 
 
@@ -46,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements android.support.v
         if(Utils.isOnline(MainActivity.this)){
             getInstagram();
         }else {
-            Toast.makeText(MainActivity.this,R.string.check_internet,Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.check_internet, Toast.LENGTH_SHORT).show();
         }
 
         createTabBar();
@@ -110,43 +120,48 @@ public class MainActivity extends ActionBarActivity implements android.support.v
 
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        android.support.v7.widget.SearchView searchView =
+                (android.support.v7.widget.SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String entryString) {
+                userString = entryString;
+                String word = "@";
+
+                if(entryString.substring(0, 1).equals(word)){
+                    mSearchType=1;
+                    getUser();
+                }else{
+                    getUser();
+                }
+//                Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
 
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                return true;
 
-            SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            }
 
-            SearchView search = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        });
 
-//            search.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
-//
-//            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//
-//                @Override
-//                public boolean onQueryTextSubmit(String query) {
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean onQueryTextChange(String query) {
-//
-//
-//                    return true;
-//
-//                }
-//
-//            });
-
-        }
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -154,11 +169,6 @@ public class MainActivity extends ActionBarActivity implements android.support.v
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -172,16 +182,59 @@ public class MainActivity extends ActionBarActivity implements android.support.v
             @Override
             public void success(Instagram instagram, Response response) {
                 mInstagram= instagram;
-                mTabsAdapter.update(mInstagram);
+                mTabsAdapter.update(mInstagram,0);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(MainActivity.this,R.string.error_data,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.error_data, Toast.LENGTH_SHORT).show();
             }
         };
         Client.initRestAdapter().getInstagram(Constants.ID_INSTAGRAM,callback);
     }
 
+    public void getUser(){
+        Callback<Instagram> callback = new Callback<Instagram>() {
+            @Override
+            public void success(Instagram instagram, Response response) {
+                mInstagram= instagram;
+                diferentSearch();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(MainActivity.this, R.string.error_data, Toast.LENGTH_SHORT).show();
+            }
+        };
+        Client.initRestAdapter().getUser(userString,Constants.CLIENT_ID, callback);
+    }
+
+    public void diferentSearch(){
+        switch (mSearchType){
+            case 0:
+                mTabsAdapter.update(mInstagram,1);
+                break;
+            case 1:
+                getUserPath(mInstagram.getData().get(0).getId());
+                mSearchType = 0;
+                break;
+        }
+    }
+
+    public void getUserPath(String userPath){
+        Callback<Instagram> callback = new Callback<Instagram>() {
+            @Override
+            public void success(Instagram instagram, Response response) {
+                mInstagram= instagram;
+                mTabsAdapter.update(mInstagram,0);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(MainActivity.this, R.string.error_data, Toast.LENGTH_SHORT).show();
+            }
+        };
+        Client.initRestAdapter().getUserPath(userPath,Constants.CLIENT_ID,callback);
+    }
 
 }

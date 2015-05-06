@@ -21,6 +21,7 @@ import com.thedeveloperworldisyours.whichit.utils.Constants;
 import com.thedeveloperworldisyours.whichit.utils.Utils;
 import com.thedeveloperworldisyours.whichit.webservice.Client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -36,6 +37,7 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
     private ProgressDialog mProgressDialog;
     private boolean mFinishScroll = false;
     private List<Datum> mList;
+    private int mType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,32 +48,28 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
         mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
         mProgressDialog = new ProgressDialog(getActivity());
+        mList = new ArrayList<Datum>();
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
                 mProgressDialog.show();
                 getInfo();
-                addList(mList);
+
                 mFinishScroll = true;
             }
         });
 
-        getList();
+//        getList();
         return view;
     }
 
-    public void getList() {
-        if (!(mInstagram == null)) {
-            List<Datum> list = mInstagram.getData();
-            mListAdapter = new ListAdapter(getActivity(), list);
-            mListView.setAdapter(mListAdapter);
-        }
-    }
-
     @Override
-    public void update(Instagram instagram) {
+    public void update(Instagram instagram,int type) {
         mInstagram = instagram;
-        getList();
+        mType = type;
+        mList = new ArrayList<Datum>();
+        addList(instagram.getData());
+        buildList();
     }
 
     @Override
@@ -93,7 +91,8 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
             public void success(Instagram instagram, Response response) {
-                mList = instagram.getData();
+                mType = 0;
+                addList(instagram.getData());
                 buildList();
             }
 
@@ -113,7 +112,7 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
 
     public void buildList() {
         if (!mFinishScroll) {
-            mListAdapter = new ListAdapter(getActivity(), mList);
+            mListAdapter = new ListAdapter(getActivity(), mList,mType);
             mListView.setAdapter(mListAdapter);
 
         } else {

@@ -22,16 +22,17 @@ import static com.thedeveloperworldisyours.whichit.R.layout.*;
 public class ListAdapter extends ArrayAdapter<Datum> {
     private final Context mContext;
     private final List<Datum> mValues;
-
+    private int mType;
 
     static class ViewHolder {
         public TextView text;
         public ImageView image;
     }
 
-    public ListAdapter(Context context, List<Datum> list) {
+    public ListAdapter(Context context, List<Datum> list, int type) {
         super(context, row_layout, list);
         this.mContext = context;
+        this.mType = type;
         this.mValues = list;
     }
 
@@ -53,8 +54,19 @@ public class ListAdapter extends ArrayAdapter<Datum> {
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
 //        holder.text.setText(Utils.cobert(values.get(position).getLink()));
-        holder.text.setText(mValues.get(position).getImages().getLowResolution().getUrl());
-        Picasso.with(mContext).load(mValues.get(position).getImages().getLowResolution().getUrl()).into(holder.image);
+        switch (mType){
+            case 0:
+                holder.text.setText(mValues.get(position).getCaption().getText());
+                Picasso.with(mContext).load(mValues.get(position).getImages().getLowResolution().getUrl()).into(holder.image);
+                break;
+            case 1:
+                holder.text.setText(mValues.get(position).getUsername());
+                Picasso.with(mContext).load(mValues.get(position).getProfilePicture()).into(holder.image);
+                break;
+            case 2:
+                break;
+        }
+
         return rowView;
     }
 

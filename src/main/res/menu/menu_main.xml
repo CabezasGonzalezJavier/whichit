@@ -4,10 +4,9 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_search"
-        android:actionViewClass="android.widget.SearchView"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="Search"
-        app:showAsAction="always" />
+        android:id="@+id/menu_search"
+        android:title="@string/menu_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always"/>
 
 </menu>

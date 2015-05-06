@@ -44,6 +44,11 @@ public class Datum implements Serializable {
     private String id;
     @Expose
     private User user;
+    @Expose
+    private String username;
+    @SerializedName("profile_picture")
+    @Expose
+    private String profilePicture;
 
     /**
      *
@@ -297,5 +302,41 @@ public class Datum implements Serializable {
         this.user = user;
     }
 
+
+    /**
+     *
+     * @return
+     * The username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     *
+     * @param username
+     * The username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     *
+     * @return
+     * The profilePicture
+     */
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    /**
+     *
+     * @param profilePicture
+     * The profile_picture
+     */
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 
 }

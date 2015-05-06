@@ -14,6 +14,7 @@ import com.thedeveloperworldisyours.whichit.utils.Constants;
 public class TabsAdapter extends FragmentStatePagerAdapter {
 
     private Instagram mInstagram;
+    private int mType;
 
     public TabsAdapter(FragmentManager supportFragmentManager) {
         super(supportFragmentManager);
@@ -33,15 +34,16 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
         return null;
     }
     //call this method to update fragments in ViewPager dynamically
-    public void update(Instagram instagram) {
+    public void update(Instagram instagram, int type) {
         mInstagram = instagram;
+        mType = type;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemPosition(Object object) {
         if (object instanceof UpdateableFragment) {
-            ((UpdateableFragment) object).update(mInstagram);
+            ((UpdateableFragment) object).update(mInstagram, mType);
         }
         //don't return POSITION_NONE, avoid fragment recreation.
         return super.getItemPosition(object);
