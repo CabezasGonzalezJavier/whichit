@@ -33,7 +33,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
 
         return null;
     }
-    //call this method to update fragments in ViewPager dynamically
+
+    /**
+     * call this method to update fragments in ViewPager dynamically
+     */
     public void update(Instagram instagram, int type) {
         mInstagram = instagram;
         mType = type;

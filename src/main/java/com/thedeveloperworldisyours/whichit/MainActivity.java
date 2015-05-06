@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity implements  android.support.
     private ViewPager tabsviewPager;
     private ActionBar mActionBar;
     private TabsAdapter mTabsAdapter;
-    public Instagram mInstagram;
+    private Instagram mInstagram;
     private SearchView mSearchView;
     private TextView mStatusView;
     private String userString;
@@ -146,7 +146,6 @@ public class MainActivity extends ActionBarActivity implements  android.support.
                 }else{
                     getUser();
                 }
-//                Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -173,10 +172,9 @@ public class MainActivity extends ActionBarActivity implements  android.support.
         return super.onOptionsItemSelected(item);
     }
 
-    public Instagram getTheData() {
-        return mInstagram;
-    }
-
+    /**
+     * Get data from instagram
+     */
     public void getInstagram() {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
@@ -193,6 +191,9 @@ public class MainActivity extends ActionBarActivity implements  android.support.
         Client.initRestAdapter().getInstagram(Constants.ID_INSTAGRAM,callback);
     }
 
+    /**
+     * Get user data from instagram
+     */
     public void getUser(){
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
@@ -221,6 +222,9 @@ public class MainActivity extends ActionBarActivity implements  android.support.
         }
     }
 
+    /**
+     * Get data about user from instagram
+     */
     public void getUserPath(String userPath){
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override

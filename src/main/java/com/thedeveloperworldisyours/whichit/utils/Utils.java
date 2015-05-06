@@ -9,6 +9,12 @@ import android.net.NetworkInfo;
  * Created by javiergonzalezcabezas on 5/5/15.
  */
 public class Utils {
+
+    /**
+     * Check if there is connection
+     * @param activity
+     * @return
+     */
     public static boolean isOnline(Activity activity) {
         ConnectivityManager cm =
                 (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -59,10 +59,14 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
             }
         });
 
-//        getList();
         return view;
     }
 
+    /**
+     * Udapte ListView from Activity
+     * @param instagram
+     * @param type
+     */
     @Override
     public void update(Instagram instagram,int type) {
         mInstagram = instagram;
@@ -72,6 +76,9 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
         buildList();
     }
 
+    /**
+     * Refresh ListView from pull to refresh
+     */
     @Override
     public void onRefresh() {
         mListAdapter.clear();
@@ -87,6 +94,9 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
         }
     }
 
+    /**
+     * Get data from Instagram
+     */
     public void getInstagram() {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
@@ -110,6 +120,9 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
         }
     }
 
+    /**
+     * Call to adapter for creating or for updating
+     */
     public void buildList() {
         if (!mFinishScroll) {
             mListAdapter = new ListAdapter(getActivity(), mList,mType);

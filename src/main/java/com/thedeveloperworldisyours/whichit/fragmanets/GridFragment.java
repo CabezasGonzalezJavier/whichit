@@ -1,12 +1,10 @@
 package com.thedeveloperworldisyours.whichit.fragmanets;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,10 +17,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -93,13 +89,17 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
                                     int position, long id) {
 
                 showPopup(getActivity(),mPoint,position);
-//                showAlertDialog(position);
             }
         });
 
         return view;
     }
 
+    /**
+     * Udapte GridView from Activity
+     * @param instagram
+     * @param type
+     */
     @Override
     public void update(Instagram instagram, int type) {
         mInstagram = instagram;
@@ -109,6 +109,9 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
         buildList();
     }
 
+    /**
+     * Refresh GridView from pull to refresh
+     */
     @Override
     public void onRefresh() {
         mGridAdapter.clear();
@@ -116,6 +119,9 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
         mSwipeLayout.setRefreshing(false);
     }
 
+    /**
+     * Check if there is connection
+     */
     public void getInfo(){
         if(Utils.isOnline(getActivity())){
             getInstagram();
@@ -124,6 +130,9 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
         }
     }
 
+    /**
+     * Get data from instagram
+     */
     public void getInstagram() {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
@@ -147,30 +156,9 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
         }
     }
 
-
-    public void showAlertDialog(int position){
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.row_layout);
-
-        // set the custom dialog components - text, image and button
-        TextView text = (TextView) dialog.findViewById(R.id.label);
-//        text.setText("Android custom dialog example!");
-        ImageView image = (ImageView) dialog.findViewById(R.id.icon);
-        switch (mType){
-            case 0:
-                text.setText(mInstagram.getData().get(position).getCaption().getText());
-                Picasso.with(getActivity()).load(mInstagram.getData().get(position).getImages().getLowResolution().getUrl()).into(image);
-                break;
-            case 1:
-                text.setText(mInstagram.getData().get(position).getUsername());
-                Picasso.with(getActivity()).load(mInstagram.getData().get(position).getProfilePicture()).into(image);
-                break;
-            case 2:
-                break;
-        }
-        dialog.show();
-    }
-
+    /**
+     * Call to adapter for creating or for updating
+     */
     public void buildList() {
         if (!mFinishScroll) {
             mGridAdapter = new GridAdapter(getActivity(), mList,mType);
@@ -184,7 +172,12 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
     }
 
 
-
+    /**
+     * Create popup
+     * @param context
+     * @param p
+     * @param position
+     */
     private void showPopup(final Activity context, Point p, int position) {
 
         Rect rectgle= new Rect();
@@ -212,29 +205,26 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
 
         // Some offset to align the popup a bit to the right, and a bit down,
         // relative to button's position.
-
         int OFFSET_X = 0;
         int OFFSET_Y = 0;
-        // Clear the default translucent background
-        popup.setBackgroundDrawable(new BitmapDrawable());
+
         // Displaying the popup at the specified location, + offsets.
         popup.showAtLocation(layout, Gravity.CENTER_VERTICAL, p.x + OFFSET_X, p.y
                 + OFFSET_Y);
 
-        // Getting a reference to Close button, and close the popup when
-        // clicked.
 
 
         TextView text = (TextView) layout.findViewById(R.id.label);
         text.setMovementMethod(new ScrollingMovementMethod());
-//        text.setText("Android custom dialog example!");
         ImageView image = (ImageView) layout.findViewById(R.id.icon);
         switch (mType){
             case 0:
+                //when is normal data
                 text.setText(mList.get(position).getCaption().getText());
                 Picasso.with(getActivity()).load(mList.get(position).getImages().getLowResolution().getUrl()).into(image);
                 break;
             case 1:
+                //When is user data
                 text.setText(mList.get(position).getUsername());
                 Picasso.with(getActivity()).load(mList.get(position).getProfilePicture()).into(image);
                 break;

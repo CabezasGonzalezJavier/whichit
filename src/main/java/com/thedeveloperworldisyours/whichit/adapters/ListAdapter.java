@@ -55,17 +55,16 @@ public class ListAdapter extends ArrayAdapter<Datum> {
         // fill data
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
-//        holder.text.setText(Utils.cobert(values.get(position).getLink()));
         switch (mType){
             case 0:
+                //when is normal data
                 holder.text.setText(mValues.get(position).getCaption().getText());
                 Picasso.with(mContext).load(mValues.get(position).getImages().getLowResolution().getUrl()).into(holder.image);
                 break;
             case 1:
+                //when is user data
                 holder.text.setText(mValues.get(position).getUsername());
                 Picasso.with(mContext).load(mValues.get(position).getProfilePicture()).into(holder.image);
-                break;
-            case 2:
                 break;
         }
 

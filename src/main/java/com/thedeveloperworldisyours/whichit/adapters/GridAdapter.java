@@ -6,7 +6,6 @@ import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -14,9 +13,7 @@ import com.squareup.picasso.Picasso;
 import com.thedeveloperworldisyours.whichit.R;
 import com.thedeveloperworldisyours.whichit.models.Datum;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by javiergonzalezcabezas on 5/5/15.
@@ -50,9 +47,11 @@ public class GridAdapter extends ArrayAdapter<Datum> {
 
             switch (mType){
                 case 0:
+                    //when is normal data
                     Picasso.with(mActivity).load(mValues.get(position).getImages().getLowResolution().getUrl()).into(imageView);
                     break;
                 case 1:
+                    //when is user data
                     Picasso.with(mActivity).load(mValues.get(position).getProfilePicture()).into(imageView);
                     break;
             }
