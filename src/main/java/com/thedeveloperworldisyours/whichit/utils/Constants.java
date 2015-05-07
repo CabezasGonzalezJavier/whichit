@@ -5,6 +5,7 @@ package com.thedeveloperworldisyours.whichit.utils;
  */
 public class Constants {
     public static String URL ="https://api.instagram.com/v1";
+    public static String NOFILTER="nofilter";
     public static String ID_INSTAGRAM ="761f7d94e3e94f688f63192bcbce03da";
     public static String ID_INTENT ="gotoMain";
     public static String CLIENT_ID="2a4ad04027814231b1ace96bb34766a7";

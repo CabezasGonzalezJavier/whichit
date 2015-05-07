@@ -17,7 +17,7 @@ import retrofit.http.Query;
 public class Client {
 
     public interface ClientInterface{
-        
+
         @GET("/tags/nofilter/media/recent")
         void getInstagram( @Query("client_id") String clientId, Callback<Instagram> callback);
 
@@ -26,6 +26,9 @@ public class Client {
 
         @GET("/users/{user}/media/recent")
         void getUserPath(@Path("user") String userPath,@Query("client_id") String user, Callback<Instagram> callback);
+
+        @GET("/tags/{tag-name}/media/recent")
+        void getTagPath(@Path("tag-name") String tagPath,@Query("client_id") String user, Callback<Instagram> callback);
     }
 
     public static ClientInterface initRestAdapter()

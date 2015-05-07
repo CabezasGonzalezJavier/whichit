@@ -48,6 +48,7 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
         mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
         mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setCancelable(false);
         mList = new ArrayList<Datum>();
         mListView.setOnScrollListener(new InfiniteScrollListener(5) {
             @Override
@@ -88,7 +89,7 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
 
     public void getInfo(){
         if(Utils.isOnline(getActivity())){
-            getInstagram();
+            getTagPath(Constants.NOFILTER);
         }else {
             Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
         }
@@ -97,7 +98,7 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
     /**
      * Get data from Instagram
      */
-    public void getInstagram() {
+    public void getTagPath(String tagPath) {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
             public void success(Instagram instagram, Response response) {
@@ -111,7 +112,7 @@ public class ListFragment extends Fragment implements UpdateableFragment, SwipeR
                 Toast.makeText(getActivity(),R.string.error_data,Toast.LENGTH_SHORT).show();
             }
         };
-        Client.initRestAdapter().getInstagram(Constants.ID_INSTAGRAM,callback);
+        Client.initRestAdapter().getTagPath(tagPath,Constants.ID_INSTAGRAM,callback);
     }
 
     public void addList(List<Datum> mValues){

@@ -42,7 +42,7 @@ public class ListAdapter extends ArrayAdapter<Datum> {
         View rowView = convertView;
         // reuse views
         if (rowView == null) {
-            LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rowView = inflater.inflate(R.layout.row_layout, null);
             // configure view holder
             ViewHolder viewHolder = new ViewHolder();
@@ -55,7 +55,7 @@ public class ListAdapter extends ArrayAdapter<Datum> {
         // fill data
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
-        switch (mType){
+        switch (mType) {
             case 0:
                 //when is normal data
                 holder.text.setText(mValues.get(position).getCaption().getText());

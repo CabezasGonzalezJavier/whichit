@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -43,7 +44,6 @@ public class MainActivity extends ActionBarActivity implements  android.support.
     private SearchView mSearchView;
     private TextView mStatusView;
     private String userString;
-    private int mSearchType=0;
 
 
 
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements  android.support.
         Intent intent = getIntent();
         mInstagram = (Instagram)intent.getSerializableExtra(Constants.ID_INTENT);
         if(Utils.isOnline(MainActivity.this)){
-            getInstagram();
+            getTagPath(Constants.NOFILTER);
         }else {
             Toast.makeText(MainActivity.this, R.string.check_internet, Toast.LENGTH_SHORT).show();
         }
@@ -120,7 +120,7 @@ public class MainActivity extends ActionBarActivity implements  android.support.
 
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -129,8 +129,9 @@ public class MainActivity extends ActionBarActivity implements  android.support.
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        android.support.v7.widget.SearchView searchView =
-                (android.support.v7.widget.SearchView) menu.findItem(R.id.menu_search).getActionView();
+//        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) menu.findItem(R.id.menu_search).getActionView();
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
@@ -139,12 +140,15 @@ public class MainActivity extends ActionBarActivity implements  android.support.
             public boolean onQueryTextSubmit(String entryString) {
                 userString = entryString;
                 String word = "@";
+                String wordHastag= "#";
 
                 if(entryString.substring(0, 1).equals(word)){
-                    mSearchType=1;
                     getUser();
                 }else{
-                    getUser();
+                    if (entryString.substring(0, 1).equals(wordHastag)){
+                        entryString = entryString.replace(wordHastag,"");
+                    }
+                    getTagPath(entryString);
                 }
                 return false;
             }
@@ -175,7 +179,7 @@ public class MainActivity extends ActionBarActivity implements  android.support.
     /**
      * Get data from instagram
      */
-    public void getInstagram() {
+    public void getTagPath(String tagPath) {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
             public void success(Instagram instagram, Response response) {
@@ -188,7 +192,7 @@ public class MainActivity extends ActionBarActivity implements  android.support.
                 Toast.makeText(MainActivity.this, R.string.error_data, Toast.LENGTH_SHORT).show();
             }
         };
-        Client.initRestAdapter().getInstagram(Constants.ID_INSTAGRAM,callback);
+        Client.initRestAdapter().getTagPath(tagPath,Constants.ID_INSTAGRAM,callback);
     }
 
     /**
@@ -199,7 +203,7 @@ public class MainActivity extends ActionBarActivity implements  android.support.
             @Override
             public void success(Instagram instagram, Response response) {
                 mInstagram= instagram;
-                diferentSearch();
+                getUserPath(mInstagram.getData().get(0).getId());
             }
 
             @Override
@@ -210,17 +214,16 @@ public class MainActivity extends ActionBarActivity implements  android.support.
         Client.initRestAdapter().getUser(userString,Constants.CLIENT_ID, callback);
     }
 
-    public void diferentSearch(){
-        switch (mSearchType){
-            case 0:
-                mTabsAdapter.update(mInstagram,1);
-                break;
-            case 1:
-                getUserPath(mInstagram.getData().get(0).getId());
-                mSearchType = 0;
-                break;
-        }
-    }
+//    public void diferentSearch(){
+//        switch (mSearchType){
+//            case 0:
+//                mTabsAdapter.update(mInstagram,1);
+//                break;
+//            case 1:
+//
+//                break;
+//        }
+//    }
 
     /**
      * Get data about user from instagram

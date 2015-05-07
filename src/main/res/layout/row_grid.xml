@@ -8,7 +8,7 @@
     tools:context=".TheDeveloperWorldIsYoursActivity">
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/row_grid_icon"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:layout_centerHorizontal="true"
@@ -16,24 +16,4 @@
         android:layout_margin="3dp"
         android:background="@android:drawable/ic_dialog_info"
         android:scaleType="centerCrop" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="3dp"
-        android:background="@color/black">
-
-        <TextView
-            android:id="@+id/label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:background="@android:color/white"
-            android:maxLines="3"
-            android:scrollbars="vertical"
-            android:textColor="@color/gray"
-            android:textSize="20dp" />
-    </RelativeLayout>
-
 </RelativeLayout>

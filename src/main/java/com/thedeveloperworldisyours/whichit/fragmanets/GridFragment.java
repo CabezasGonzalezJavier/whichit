@@ -74,6 +74,7 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
 
 
         mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setCancelable(false);
         mGridView.setOnScrollListener(new InfiniteScrollListener(1) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
@@ -124,7 +125,7 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
      */
     public void getInfo(){
         if(Utils.isOnline(getActivity())){
-            getInstagram();
+            getTagPath(Constants.NOFILTER);
         }else {
             Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
         }
@@ -133,7 +134,7 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
     /**
      * Get data from instagram
      */
-    public void getInstagram() {
+    public void getTagPath(String tagPath) {
         Callback<Instagram> callback = new Callback<Instagram>() {
             @Override
             public void success(Instagram instagram, Response response) {
@@ -147,7 +148,7 @@ public class GridFragment extends Fragment implements UpdateableFragment, SwipeR
                 Toast.makeText(getActivity(),R.string.error_data,Toast.LENGTH_SHORT).show();
             }
         };
-        Client.initRestAdapter().getInstagram(Constants.ID_INSTAGRAM,callback);
+        Client.initRestAdapter().getTagPath(tagPath, Constants.ID_INSTAGRAM,callback);
     }
 
     public void addList(List<Datum> mValues){
